@@ -112,7 +112,6 @@ ffmpeg
 ### Python3
 imutil  
 opencv  
-opencv-contrib-python
 
 ## Scripts
 
