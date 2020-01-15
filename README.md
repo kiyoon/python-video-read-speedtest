@@ -4,6 +4,8 @@ This project measures reading speed depending on the video format (i.e. frame im
 
 Additionally, this experiment shows whether using HDD during training is feasible or not. Reading speed of video files is not much different between SSD and HDD.
 
+FYI, NVIDIA DALI (NVVL) provides efficient GPU-accelerated video dataloader directly from video files. This experiment doesn't involve GPU usage.
+
 ## Results
 
 We ran the same code twice to test also the filesystem cache effect. The more file it accesses, the bigger the difference between the two runs.
@@ -28,6 +30,8 @@ $ ./read_frames.py
 * Reading a long video:  
 
 ```bash
+import math
+import os
 $ echo 3 | sudo tee /proc/sys/vm/drop_caches
 $ ./read_video.py
 [INFO] elasped time: 8.70
@@ -54,6 +58,27 @@ $ ./read_video_chunks.py
 [INFO] approx. FPS: 9988.92
 [INFO] num frames: 99030
 ```
+
+* Reading clips from short (3s) videos (random access):  
+
+Note the number of frames read is different so only the FPS is meaningful here.  
+Also the depending on seek location the speed can vary.
+
+```bash
+$ echo 3 | sudo tee /proc/sys/vm/drop_caches
+$ ./read_video_chunks_random_access_clip.py
+[INFO] elasped time: 4.30
+import math
+import os
+[INFO] approx. FPS: 2961.33
+[INFO] num frames: 12727
+
+$ ./read_video_chunks_random_access_clip.py
+[INFO] elasped time: 3.99
+[INFO] approx. FPS: 3188.31
+[INFO] num frames: 12722
+```
+
 
 ### Toshiba DT01ACA300 HDD
 
@@ -102,6 +127,24 @@ $ ./read_video_chunks.py
 [INFO] num frames: 99030
 ```
 
+* Reading clips from short (3s) videos (random access):  
+
+Note the number of frames read is different so only the FPS is meaningful here.  
+Also the depending on seek location the speed can vary.
+
+```bash
+$ echo 3 | sudo tee /proc/sys/vm/drop_caches
+$ ./read_video_chunks_random_access_clip.py
+[INFO] elasped time: 5.33
+[INFO] approx. FPS: 2384.61
+[INFO] num frames: 12704
+
+$ ./read_video_chunks_random_access_clip.py
+[INFO] elasped time: 3.93
+[INFO] approx. FPS: 3234.41
+[INFO] num frames: 12712
+```
+
 # Usage
 
 ## Dependencies
@@ -136,5 +179,16 @@ $ ./rescale_video_chunk.sh
 $ ./read_video_chunks.py
 ```
 
+* Measure random access reading speed from short videos:  
+```bash
+$ ./rescale_video_chunk.sh    # if not done yet
+$ ./read_video_chunks.py
+```
+
+
 * If you want to run again, consider removing disk cache:  
 `$ echo 3 | sudo tee /proc/sys/vm/drop_caches`
+
+# Todo
+
+Random access from videos (making clips from segments for typical action recognition approach)
