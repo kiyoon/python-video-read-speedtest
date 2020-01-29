@@ -188,7 +188,3 @@ $ ./read_video_chunks.py
 
 * If you want to run again, consider removing disk cache:  
 `$ echo 3 | sudo tee /proc/sys/vm/drop_caches`
-
-# Todo
-
-Random access from videos (making clips from segments for typical action recognition approach)
